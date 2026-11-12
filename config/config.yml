@@ -1,1 +1,8 @@
 db_conn: "smth"
+handler:
+  debug: true
+web:
+  read_timeout: 10s
+  write_timeout: 10s
+logger:
+  level: "debug"
