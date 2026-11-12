@@ -2,12 +2,8 @@ package cfg
 
 import "github.com/ilyakaznacheev/cleanenv"
 
-type db struct {
-}
-
 type Config struct {
-	ConnString    string `yaml:"db_conn"`
-	TelegramToken string `yaml:"telegram_token"`
+	ConnString string `yaml:"db_conn"`
 }
 
 func MustLoad(path string) *Config {
