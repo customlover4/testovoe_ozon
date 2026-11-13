@@ -7,8 +7,11 @@ import (
 )
 
 type Web struct {
-	ReadTimeout  time.Duration `yaml:"read_timeout" env:"READ_TIMEOUT" env-default:"10s"`
-	WriteTimeout time.Duration `yaml:"write_timeout" env:"WRITE_TIMEOUT" env-default:"10s"`
+	Addr              string        `yaml:"addr" env:"ADDR" env-default:"127.0.0.1"`
+	Port              string        `yaml:"port" env:"PORT" env-default:"8080"`
+	ReadTimeout       time.Duration `yaml:"read_timeout" env:"READ_TIMEOUT" env-default:"10s"`
+	ReadHeaderTimeout time.Duration `yaml:"read_header_timeout" env:"READ_HEADER_TIMEOUT" env-default:"3s"`
+	WriteTimeout      time.Duration `yaml:"write_timeout" env:"WRITE_TIMEOUT" env-default:"10s"`
 }
 
 type Handler struct {
