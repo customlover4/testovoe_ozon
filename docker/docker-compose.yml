@@ -3,11 +3,6 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
-    environment:
-      ADDR: 0.0.0.0
-      PORT: "8080"
-      POSTGRES_DSN: postgres://app:app@postgres:5432/comments?sslmode=disable
-      SECRET: lkdksajhjg;io;hjb
     ports:
       - "8080:8080"
     depends_on:

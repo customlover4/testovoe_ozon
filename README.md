@@ -1,4 +1,5 @@
-Тестовое задание для стажера-разработчика
+# docker/docker-compose.yml
+# config/config.yml
 
 Задача:
 
