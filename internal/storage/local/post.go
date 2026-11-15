@@ -6,14 +6,14 @@ import (
 	"testovoe/pkg/errs"
 )
 
-func (l *Local) NewPost(ctx context.Context, p post.Post) error {
+func (l *Local) NewPost(ctx context.Context, p post.Post) (post.Post, error) {
 	l.postsMu.Lock()
 	defer l.postsMu.Unlock()
 
-	p.ID = l.NewPostID()
+	p.ID = l.newPostID()
 	l.posts[p.ID] = &p
 	l.postsID = append(l.postsID, p.ID)
-	return nil
+	return p, nil
 }
 
 func (l *Local) Post(ctx context.Context, id uint64) (post.Post, error) {
@@ -31,6 +31,10 @@ func (l *Local) Posts(ctx context.Context, first int, after uint64) ([]post.Post
 	l.postsMu.RLock()
 	defer l.postsMu.RUnlock()
 
+	if first <= 0 {
+		return []post.Post{}, nil
+	}
+
 	start := 0
 	if after != 0 {
 		for i, id := range l.postsID {
@@ -42,7 +46,7 @@ func (l *Local) Posts(ctx context.Context, first int, after uint64) ([]post.Post
 	}
 
 	end := start + first
-	if first <= 0 || end > len(l.postsID) {
+	if end > len(l.postsID) {
 		end = len(l.postsID)
 	}
 

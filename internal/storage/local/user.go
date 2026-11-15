@@ -14,7 +14,7 @@ func (l *Local) NewUser(ctx context.Context, login, password string) (uint64, er
 		return 0, errs.ErrNotUnique
 	}
 
-	newId := l.NewUserID()
+	newId := l.newUserID()
 
 	l.users[newId] = &user.User{
 		ID:       newId,
