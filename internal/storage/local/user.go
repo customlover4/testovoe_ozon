@@ -7,6 +7,9 @@ import (
 )
 
 func (l *Local) NewUser(login, password string) (uint64, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if _, ok := l.usersByName[login]; ok {
 		return 0, errs.ErrNotUnique
 	}
@@ -25,6 +28,9 @@ func (l *Local) NewUser(login, password string) (uint64, error) {
 }
 
 func (l *Local) User(login string) (user.User, error) {
+	l.mu.RLock()
+	defer l.mu.RUnlock()
+
 	if v, ok := l.usersByName[login]; !ok {
 		return user.User{}, errs.ErrNotFound
 	} else {
