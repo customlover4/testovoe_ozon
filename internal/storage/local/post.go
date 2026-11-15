@@ -16,18 +16,18 @@ func (l *Local) NewPost(ctx context.Context, p post.Post) error {
 	return nil
 }
 
-func (l *Local) Post(ctx context.Context, id uint64) (*post.Post, error) {
+func (l *Local) Post(ctx context.Context, id uint64) (post.Post, error) {
 	l.postsMu.RLock()
 	defer l.postsMu.RUnlock()
 
 	p, ok := l.posts[id]
 	if !ok {
-		return nil, errs.ErrNotFound
+		return post.Post{}, errs.ErrNotFound
 	}
-	return p, nil
+	return *p, nil
 }
 
-func (l *Local) Posts(ctx context.Context, first int, after uint64) ([]*post.Post, error) {
+func (l *Local) Posts(ctx context.Context, first int, after uint64) ([]post.Post, error) {
 	l.postsMu.RLock()
 	defer l.postsMu.RUnlock()
 
@@ -46,9 +46,9 @@ func (l *Local) Posts(ctx context.Context, first int, after uint64) ([]*post.Pos
 		end = len(l.postsID)
 	}
 
-	out := make([]*post.Post, 0, end-start)
+	out := make([]post.Post, 0, end-start)
 	for _, id := range l.postsID[start:end] {
-		out = append(out, l.posts[id])
+		out = append(out, *l.posts[id])
 	}
 	return out, nil
 }
