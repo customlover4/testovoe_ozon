@@ -2,6 +2,7 @@ package service
 
 type storage interface {
 	auth
+	postService
 }
 
 type service struct {

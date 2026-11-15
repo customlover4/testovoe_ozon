@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -12,8 +13,8 @@ import (
 )
 
 type auth interface {
-	NewUser(login, password string) (uint64, error)
-	User(login string) (user.User, error)
+	NewUser(ctx context.Context, login, password string) (uint64, error)
+	User(ctx context.Context, login string) (user.User, error)
 }
 
 func (s *service) LoginPasswordValidation(login, pswd string) error {
@@ -27,7 +28,7 @@ func (s *service) LoginPasswordValidation(login, pswd string) error {
 	return nil
 }
 
-func (s *service) Registration(login, pswd string) (string, error) {
+func (s *service) Registration(ctx context.Context, login, pswd string) (string, error) {
 	const op = "internal.service.Registration"
 
 	if err := s.LoginPasswordValidation(login, pswd); err != nil {
@@ -39,7 +40,7 @@ func (s *service) Registration(login, pswd string) (string, error) {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
-	id, err := s.stor.NewUser(login, hashed)
+	id, err := s.stor.NewUser(ctx, login, hashed)
 	if errors.Is(err, errs.ErrNotUnique) {
 		return "", errs.NewValidation("login", "not unique")
 	} else if err != nil {
@@ -56,14 +57,14 @@ func (s *service) Registration(login, pswd string) (string, error) {
 	return t, nil
 }
 
-func (s *service) Login(login, pswd string) (string, error) {
+func (s *service) Login(ctx context.Context, login, pswd string) (string, error) {
 	const op = "internal.service.Login"
 
 	if err := s.LoginPasswordValidation(login, pswd); err != nil {
 		return "", err
 	}
 
-	user, err := s.stor.User(login)
+	user, err := s.stor.User(ctx, login)
 	if errors.Is(err, errs.ErrNotFound) {
 		return "", errs.NewValidation("password", "wrong password")
 	} else if err != nil {
