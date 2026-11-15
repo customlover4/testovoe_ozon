@@ -1,35 +1,34 @@
 package local
 
 import (
-	"strconv"
+	"context"
 	"testovoe/internal/entities/user"
 	"testovoe/pkg/errs"
 )
 
-func (l *Local) NewUser(login, password string) (uint64, error) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
+func (l *Local) NewUser(ctx context.Context, login, password string) (uint64, error) {
+	l.usersMu.Lock()
+	defer l.usersMu.Unlock()
 
 	if _, ok := l.usersByName[login]; ok {
 		return 0, errs.ErrNotUnique
 	}
 
-	l.lastUserID++
+	newId := l.NewUserID()
 
-	id := strconv.FormatUint(l.lastUserID, 10)
-	l.users[id] = &user.User{
-		ID:       l.lastUserID,
+	l.users[newId] = &user.User{
+		ID:       newId,
 		Login:    login,
 		Password: password,
 	}
-	l.usersByName[login] = id
+	l.usersByName[login] = newId
 
-	return l.lastUserID, nil
+	return newId, nil
 }
 
-func (l *Local) User(login string) (user.User, error) {
-	l.mu.RLock()
-	defer l.mu.RUnlock()
+func (l *Local) User(ctx context.Context, login string) (user.User, error) {
+	l.usersMu.RLock()
+	defer l.usersMu.RUnlock()
 
 	if v, ok := l.usersByName[login]; !ok {
 		return user.User{}, errs.ErrNotFound
