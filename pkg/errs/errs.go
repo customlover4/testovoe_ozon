@@ -8,6 +8,7 @@ import (
 var (
 	ErrValidation = errors.New("validation failed")
 	ErrNotFound   = errors.New("not found")
+	ErrNotUnique  = errors.New("not unique")
 )
 
 type FieldError struct {
