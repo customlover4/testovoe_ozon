@@ -1,6 +1,8 @@
 # docker/docker-compose.yml
 # config/config.yml
 
+`git clone https://github.com/customlover4/testovoe_ozon.git && cd testovoe_ozon/docker && docker compose up --build`
+
 Задача:
 
 Реализовать систему для добавления и чтения постов и комментариев с использованием GraphQL, аналогичную комментариям к постам на популярных платформах, таких как Хабр или Reddit.
