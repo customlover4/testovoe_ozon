@@ -26,12 +26,18 @@ type Auth struct {
 	Secret string `yaml:"secret" env:"SECRET" env-required:""`
 }
 
+type Storage struct {
+	Type       string `yaml:"type" env:"STORAGE" env-default:"memory"`
+	ConnString string `yaml:"conn_string" env:"POSTGRES_DSN"`
+}
+
 type Config struct {
 	ConnString string `yaml:"db_conn"`
 	Handler    `yaml:"handler"`
 	Web        `yaml:"web"`
 	Logger     `yaml:"logger"`
 	Auth       `yaml:"auth"`
+	Storage    `yaml:"storage"`
 }
 
 func MustLoad(path string) *Config {

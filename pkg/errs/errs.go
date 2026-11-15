@@ -9,6 +9,7 @@ var (
 	ErrValidation = errors.New("validation failed")
 	ErrNotFound   = errors.New("not found")
 	ErrNotUnique  = errors.New("not unique")
+	ErrForbidden  = errors.New("forbidden")
 )
 
 type FieldError struct {
