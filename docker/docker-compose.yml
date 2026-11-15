@@ -6,7 +6,6 @@ services:
     environment:
       ADDR: 0.0.0.0
       PORT: "8080"
-      STORAGE: postgres
       POSTGRES_DSN: postgres://app:app@postgres:5432/comments?sslmode=disable
       SECRET: lkdksajhjg;io;hjb
     ports:
@@ -14,6 +13,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - ../config/config.yml:/app/config/config.yml
 
   postgres:
     image: postgres:16-alpine
