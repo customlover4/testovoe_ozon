@@ -6,8 +6,10 @@ require (
 	github.com/99designs/gqlgen v0.17.98
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/jackc/pgx/v5 v5.13.0
+	github.com/jackc/pgx/v5 v5.11.0
+	github.com/pashagolub/pgxmock/v5 v5.2.0
 	github.com/rs/zerolog v1.35.1
+	github.com/stretchr/testify v1.12.1
 	github.com/vektah/gqlparser/v2 v2.5.64
 	golang.org/x/crypto v0.58.0
 )
@@ -26,8 +28,10 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.16 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
-	github.com/rogpeppe/go-internal v1.10.0 // indirect
+	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sosodev/duration v1.4.0 // indirect
+	github.com/stretchr/objx v0.5.3 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect

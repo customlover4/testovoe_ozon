@@ -3,6 +3,7 @@ package service
 type storage interface {
 	auth
 	postService
+	commentService
 }
 
 type service struct {

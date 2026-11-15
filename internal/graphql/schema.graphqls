@@ -1,0 +1,66 @@
+scalar Time
+
+type Query {
+  posts(first: Int = 10, after: ID): PostConnection!
+  post(id: ID!): Post
+}
+
+type Mutation {
+  register(login: String!, password: String!): AuthPayload!
+  login(login: String!, password: String!): AuthPayload!
+  createPost(input: CreatePostInput!): Post!
+  setPostCommentsEnabled(postId: ID!, enabled: Boolean!): Post!
+  createComment(input: CreateCommentInput!): Comment!
+}
+
+type Subscription {
+  commentAdded(postId: ID!): Comment!
+}
+
+type AuthPayload {
+  token: String!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  body: String!
+  authorId: ID!
+  commentsEnabled: Boolean!
+  comments(first: Int = 10, after: ID): CommentTree!
+}
+
+type Comment {
+  id: ID!
+  postId: ID!
+  parentId: ID
+  authorId: ID!
+  text: String!
+}
+
+type PostConnection {
+  items: [Post!]!
+  pageInfo: PageInfo!
+}
+
+type CommentTree {
+  items: [Comment!]!
+  pageInfo: PageInfo!
+}
+
+type PageInfo {
+  endCursor: ID
+  hasNextPage: Boolean!
+}
+
+input CreatePostInput {
+  title: String!
+  body: String!
+  commentsEnabled: Boolean = true
+}
+
+input CreateCommentInput {
+  postId: ID!
+  parentId: ID
+  text: String!
+}

@@ -9,12 +9,14 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	graph "testovoe/internal/graphql"
 	"testovoe/internal/service"
-	"testovoe/internal/storage/local"
-	"testovoe/internal/web"
+	"testovoe/internal/storage"
 	"testovoe/pkg/cfg"
 	"testovoe/pkg/logger"
 	"time"
+
+	"github.com/99designs/gqlgen/graphql/playground"
 )
 
 var ConfigPath = flag.String("c", "./config/config.yml", "path to config")
@@ -22,7 +24,6 @@ var ConfigPath = flag.String("c", "./config/config.yml", "path to config")
 func main() {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
-
 	flag.Parse()
 
 	config := cfg.MustLoad(*ConfigPath)
@@ -34,14 +35,23 @@ func main() {
 	log.Info().Msg("Config proceed is done.")
 	log.Info().Msg("New logger created")
 
-	str := local.New()
-	srv := service.New(
-		str, config.Auth.Secret,
-	)
+	store, closeStorage, err := storage.New(context.Background(), config.Storage.Type, config.Storage.ConnString)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to init storage")
+	}
+	if closeStorage != nil {
+		defer closeStorage()
+	}
+
+	srv := service.New(store, config.Auth.Secret)
+
+	mux := http.NewServeMux()
+	mux.Handle("/query", graph.NewServer(srv, []byte(config.Auth.Secret), log))
+	mux.Handle("/", playground.Handler("Comments GraphQL", "/query"))
 
 	addr := config.Web.Addr + ":" + config.Web.Port
 	server := http.Server{
-		Handler: web.NewRouter(config.Debug, log, srv, []byte(config.Auth.Secret)),
+		Handler: mux,
 
 		Addr:              addr,
 		WriteTimeout:      config.Web.WriteTimeout,

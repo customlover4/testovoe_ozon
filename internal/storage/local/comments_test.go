@@ -126,7 +126,6 @@ func TestComments(t *testing.T) {
 		child1, _ := l.NewComment(ctx, comment.Comment{PostID: 1, ParentID: root.ID, Text: "c1"})
 		_ = child1
 		_, _ = l.NewComment(ctx, comment.Comment{PostID: 1, ParentID: root.ID, Text: "c2"})
-		// внук
 		_, _ = l.NewComment(ctx, comment.Comment{PostID: 1, ParentID: child1.ID, Text: "grand"})
 
 		got, err := l.Comments(ctx, 1, root.ID, 10, 0)
@@ -223,7 +222,6 @@ func TestCommentTree(t *testing.T) {
 		if next != 0 {
 			t.Fatalf("expected next=0, got %d", next)
 		}
-		// preorder: root, c1, grand, c2
 		want := []uint64{root.ID, child1.ID, grand.ID, child2.ID}
 		if len(got) != len(want) {
 			t.Fatalf("expected %d comments, got %d", len(want), len(got))

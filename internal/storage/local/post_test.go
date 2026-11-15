@@ -92,7 +92,7 @@ func TestPosts(t *testing.T) {
 			ids = append(ids, p.ID)
 		}
 
-		posts, err := l.Posts(ctx, 2, ids[1]) // после второго
+		posts, err := l.Posts(ctx, 2, ids[1])
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
