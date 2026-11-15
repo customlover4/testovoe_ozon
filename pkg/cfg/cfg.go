@@ -32,7 +32,6 @@ type Storage struct {
 }
 
 type Config struct {
-	ConnString string `yaml:"db_conn"`
 	Handler    `yaml:"handler"`
 	Web        `yaml:"web"`
 	Logger     `yaml:"logger"`
