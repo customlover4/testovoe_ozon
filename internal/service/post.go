@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testovoe/internal/entities/post"
 	"testovoe/pkg/errs"
@@ -9,7 +10,8 @@ import (
 
 type postService interface {
 	NewPost(ctx context.Context, p post.Post) error
-	Posts(ctx context.Context, first int, after uint64) ([]*post.Post, error)
+	Posts(ctx context.Context, first int, after uint64) ([]post.Post, error)
+	Post(ctx context.Context, id uint64) (post.Post, error)
 }
 
 func (s *service) NewPost(ctx context.Context, p post.Post) error {
@@ -31,7 +33,7 @@ func (s *service) NewPost(ctx context.Context, p post.Post) error {
 	return nil
 }
 
-func (s *service) Posts(ctx context.Context, first int, after uint64) ([]*post.Post, uint64, error) {
+func (s *service) Posts(ctx context.Context, first int, after uint64) ([]post.Post, uint64, error) {
 	const op = "internal.service.Posts"
 
 	if first <= 0 {
@@ -51,4 +53,21 @@ func (s *service) Posts(ctx context.Context, first int, after uint64) ([]*post.P
 		next = posts[len(posts)-1].ID
 	}
 	return posts, next, nil
+}
+
+func (s *service) Post(ctx context.Context, id uint64) (post.Post, error) {
+	const op = "internal.service.Post"
+
+	if id < 1 {
+		return post.Post{}, errs.NewValidation("id", "invalid value")
+	}
+
+	p, err := s.stor.Post(ctx, id)
+	if errors.Is(err, errs.ErrNotFound) {
+		return post.Post{}, errs.ErrNotFound
+	} else if err != nil {
+		return post.Post{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return p, nil
 }
