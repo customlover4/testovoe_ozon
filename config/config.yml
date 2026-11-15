@@ -1,9 +1,11 @@
-db_conn: "smth"
+storage:
+  type: memory
+  conn_string: "postgres://app:app@postgres:5432/comments?sslmode=disable"
 handler:
   debug: true
 web:
-  addr: "127.0.0.1"
-  port: "8081"
+  addr: "0.0.0.0"
+  port: "8080"
   read_header_timeout: 3s
   read_timeout: 10s
   write_timeout: 10s
