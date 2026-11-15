@@ -6,6 +6,16 @@
     <title>Log</title>
 </head>
 <body>
-    
+    [[ if .error ]]
+        <p style="color: red">[[ .error ]]
+        </p>
+    [[ end ]]
+
+    <form action="/login" method="POST">
+        <input type="text" placeholder="login" name="login">
+        <input type="password" placeholder="password" name="password" id="">
+        <input type="submit">
+    </form>
+    <a href="/">main</a>
 </body>
 </html>

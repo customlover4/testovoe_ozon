@@ -22,11 +22,16 @@ type Logger struct {
 	Level string `yaml:"level"`
 }
 
+type Auth struct {
+	Secret string `yaml:"secret" env:"SECRET" env-required:""`
+}
+
 type Config struct {
 	ConnString string `yaml:"db_conn"`
 	Handler    `yaml:"handler"`
 	Web        `yaml:"web"`
 	Logger     `yaml:"logger"`
+	Auth       `yaml:"auth"`
 }
 
 func MustLoad(path string) *Config {

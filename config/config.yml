@@ -2,7 +2,12 @@ db_conn: "smth"
 handler:
   debug: true
 web:
+  addr: "127.0.0.1"
+  port: "8081"
+  read_header_timeout: 3s
   read_timeout: 10s
   write_timeout: 10s
 logger:
   level: "debug"
+auth:
+  secret: "LKSJDGOJEROIggjbd;eohbjlrdjf;"

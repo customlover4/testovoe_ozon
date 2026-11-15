@@ -5,3 +5,11 @@ type User struct {
 	Login    string
 	Password string
 }
+
+func (u User) Empty() bool {
+	if u.ID == 0 && u.Login == "" && u.Password == "" {
+		return true
+	}
+	
+	return false
+}

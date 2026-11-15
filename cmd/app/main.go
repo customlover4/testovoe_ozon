@@ -9,6 +9,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"testovoe/internal/service"
+	"testovoe/internal/storage/local"
 	"testovoe/internal/web"
 	"testovoe/pkg/cfg"
 	"testovoe/pkg/logger"
@@ -32,10 +34,14 @@ func main() {
 	log.Info().Msg("Config proceed is done.")
 	log.Info().Msg("New logger created")
 
-	addr := config.Web.Addr + ":" + config.Web.Port
+	str := local.New()
+	srv := service.New(
+		str, config.Auth.Secret,
+	)
 
+	addr := config.Web.Addr + ":" + config.Web.Port
 	server := http.Server{
-		Handler: web.NewRouter(config.Debug),
+		Handler: web.NewRouter(config.Debug, log, srv, []byte(config.Auth.Secret)),
 
 		Addr:              addr,
 		WriteTimeout:      config.Web.WriteTimeout,
