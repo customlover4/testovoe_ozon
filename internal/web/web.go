@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 	"testovoe/internal/web/auth"
+	"testovoe/internal/web/feed"
 	"testovoe/internal/web/middleware"
 	"testovoe/internal/web/pages"
 
@@ -12,6 +13,7 @@ import (
 
 type svc interface {
 	auth.UserService
+	feed.FeedService
 }
 
 func NewRouter(debug bool, log zerolog.Logger, s svc, secret []byte) http.Handler {
@@ -24,7 +26,7 @@ func NewRouter(debug bool, log zerolog.Logger, s svc, secret []byte) http.Handle
 	g := gin.New()
 	SetupVendor(g)
 
-	g.Use(gin.Recovery())
+	g.Use(gin.Logger(), gin.Recovery())
 
 	optional := g.Group("/", middleware.OptionalAuth(secret))
 	{
@@ -38,6 +40,14 @@ func NewRouter(debug bool, log zerolog.Logger, s svc, secret []byte) http.Handle
 
 		guest.GET("/login", auth.LoginPage)
 		guest.POST("/login", auth.Login(log, s))
+	}
+
+	protected := g.Group("/", middleware.Auth(secret))
+	{
+		protected.GET("/feed", feed.Feed(log, s))
+
+		protected.GET("/create-post", feed.CreatePostPage)
+		protected.POST("/create-post", feed.CreatePost(log, s))
 	}
 
 	g.POST("/logout", auth.Logout(log, s))

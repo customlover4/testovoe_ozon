@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"testovoe/pkg/errs"
@@ -15,8 +16,8 @@ const (
 )
 
 type UserService interface {
-	Registration(login, password string) (string, error)
-	Login(login, password string) (string, error)
+	Registration(ctx context.Context, login, password string) (string, error)
+	Login(ctx context.Context, login, password string) (string, error)
 }
 
 type UserForm struct {
@@ -39,7 +40,7 @@ func Registration(log zerolog.Logger, svc UserService) gin.HandlerFunc {
 			return
 		}
 
-		token, err := svc.Registration(form.Login, form.Password)
+		token, err := svc.Registration(ctx.Request.Context(), form.Login, form.Password)
 		if errors.Is(err, errs.ErrValidation) {
 			ctx.HTML(http.StatusUnprocessableEntity, RegistrationHTML, gin.H{
 				"error": err.Error(),
@@ -76,7 +77,7 @@ func Login(log zerolog.Logger, svc UserService) gin.HandlerFunc {
 			return
 		}
 
-		token, err := svc.Login(form.Login, form.Password)
+		token, err := svc.Login(ctx.Request.Context(), form.Login, form.Password)
 		if errors.Is(err, errs.ErrValidation) {
 			ctx.HTML(http.StatusUnprocessableEntity, LoginHTML, gin.H{
 				"error": err.Error(),
